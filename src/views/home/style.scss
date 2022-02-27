@@ -1,0 +1,35 @@
+@import 'src/assets/scss/main.scss';
+
+.home {
+  .container > .row {
+    // background-color: $bg-color;
+    border: $content-border;
+    border-radius: $border-radius;
+    padding-bottom: 0;
+    height: 75vh;
+  }
+}
+
+td {
+  vertical-align: middle;
+}
+
+.secret-icon {
+  font-size: 2rem;
+}
+
+.key-col {
+  text-align: center;
+}
+
+.tab-content {
+  display: initial;
+
+  .tab-pane {
+    height: 100%;
+
+    .row {
+      height: 100%;
+    }
+  }
+}

@@ -1,0 +1,30 @@
+@import 'src/assets/scss/main.scss';
+
+.nav-menu {
+  height: 100%;
+  background-color: $color-1;
+
+  &.nav-pills .nav-link.active,
+  &.nav-pills .nav-link:hover,
+  &.nav-pills .show > .nav-link {
+    background-color: $color-2;
+    &, > * {
+      color: #fff;
+    }
+  }
+}
+
+a.nav-link {
+  cursor: pointer;
+}
+
+.groups-link {
+  svg {
+    font-size: 1.5rem;
+  }
+}
+
+.nav-pills .nav-link,
+.nav-pills .nav-link > * {
+  color: $color-4;
+}

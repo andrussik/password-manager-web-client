@@ -1,0 +1,54 @@
+@import '~bootstrap/scss/bootstrap';
+
+$color-1: #393f60;
+$color-2: #2a2e45;
+$color-3: #212529;
+$color-4: #d3daff;
+$border-radius: 0.25rem;
+$content-border: 2px solid #7c7c7c;
+
+#root {
+  height: 100%;
+}
+
+label.form-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.form-floating {
+  label {
+    color: #777777;
+  }
+}
+
+.page-content-container {
+  max-width: 35rem;
+  min-width: 1000px;
+  height: 100%;
+}
+
+.content-col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.content-col:not(:first-child) {
+  border-left: $content-border
+}
+
+.btn-outline-primary {
+  color: $color-1;
+  background-color: #fff;
+  border-color: $color-1;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: $color-1;
+  border-color: $color-1;
+}
+
+.form-control:focus {
+  border-color: $color-4;
+}
