@@ -11,6 +11,7 @@ import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
 import './style.scss';
 import PasswordField from '../../components/password-field/PasswordField';
+import { API_URL } from '../../utils/config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const Login = () => {
 
   return (
     <div className='login'>
+      <h1>{API_URL}</h1>
       <Container className='vh-100 d-flex flex-column'>
         <Row className='justify-content-md-center align-items-center h-50 my-auto mx-5'>
           <Col>
