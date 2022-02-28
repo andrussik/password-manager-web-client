@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dev-build-and-deploy:
+
+    runs-on: ubuntu-latest
+    
+    environment: dev
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - run: |
+        docker build . --file Dockerfile -t ${{ secrets.ACR_LOGIN_SERVER }}/password-manager-web-client:dev
+        docker push ${{ secrets.ACR_LOGIN_SERVER }}/password-manager-web-client:dev
