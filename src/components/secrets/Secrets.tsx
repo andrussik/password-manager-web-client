@@ -18,7 +18,7 @@ const Secrets = () => {
     decryptedUserSecrets?.sort((x, y) => x.name.toLowerCase().localeCompare(y.name.toLowerCase())) ?? [];
 
   const onAddNewSecret = () =>
-    setEditingSecret({ name: '', username: '', password: '', userId: user!.id } as DecryptedSecret);
+    setEditingSecret({ name: '', username: '', password: '', description: '', userId: user!.id } as DecryptedSecret);
 
   const onSecretClick = (secret: DecryptedSecret) => setEditingSecret(secret);
 

@@ -34,7 +34,7 @@ const NavMenu = () => {
 
   return (
     <Nav variant='pills' className='nav-menu flex-column'>
-      <Nav.Link eventKey={NavMenuKeys.MY_VAULT} onClick={_ => setActiveKey(NavMenuKeys.MY_VAULT)}>
+      <Nav.Link active={activeKey === NavMenuKeys.MY_VAULT} onClick={_ => setActiveKey(NavMenuKeys.MY_VAULT)}>
         <GiZebraShield />
         <span className='mx-2'>My vault</span>
       </Nav.Link>
@@ -47,13 +47,13 @@ const NavMenu = () => {
 
       {!groupsCollapsed && (
         <div>
-          <Nav.Link eventKey={NavMenuKeys.CREATE_NEW_GROUP} onClick={_ => setActiveKey(NavMenuKeys.CREATE_NEW_GROUP)}>
+          <Nav.Link active={activeKey === NavMenuKeys.CREATE_NEW_GROUP} onClick={_ => setActiveKey(NavMenuKeys.CREATE_NEW_GROUP)}>
             <span className='ps-4'>+ Create new group</span>
           </Nav.Link>
           {userGroups?.map(userGroup => (
             <Nav.Link
-              eventKey={NavMenuKeys.GROUP_VAULT + userGroup.id}
               key={userGroup.id}
+              active={activeKey === NavMenuKeys.GROUP_VAULT + userGroup.id}
               onClick={_ => onUserGroupSelect(userGroup)}
             >
               <span className='ps-4'>

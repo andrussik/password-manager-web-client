@@ -76,7 +76,7 @@ const UserProvider = ({ children }: ProviderProps) => {
 
   const addUserSecret = (secret: Secret) => {
     const secrets =
-      user!.secrets?.findIndex(x => x.id === secret.id) != -1
+      user!.secrets?.find(x => x.id === secret.id) != null
         ? user!.secrets?.map(x => (x.id === secret.id ? secret : x))
         : [...(user!.secrets ?? []), secret];
 
@@ -88,7 +88,7 @@ const UserProvider = ({ children }: ProviderProps) => {
 
   const addGroupSecret = (secret: Secret) => {
     const groups =
-      user!.groups.find(x => x.groupId === secret.groupId)?.secrets?.findIndex(x => x.id === secret.id) != -1
+      user!.groups.find(x => x.groupId === secret.groupId)?.secrets?.find(x => x.id === secret.id) != null
         ? user!.groups?.map(group =>
             group.id === secret.groupId
               ? { ...group, secrets: group.secrets.map(x => (x.id === secret.id ? secret : x)) }
@@ -102,10 +102,9 @@ const UserProvider = ({ children }: ProviderProps) => {
                 }
               : group
           );
-
     setUser({
       ...user!,
-      groups: groups,
+      groups: [...groups],
     });
   };
 

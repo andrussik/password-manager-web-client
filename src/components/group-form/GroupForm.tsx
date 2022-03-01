@@ -8,21 +8,22 @@ import { saveGroup } from '../../api/GroupApi';
 import { Group } from '../../models/Group';
 import { UserContext } from '../../UserContext';
 import { HomeContext } from '../../views/home/HomeContext';
+import { NavMenuKeys } from '../nav-menu/NavMenu';
 import './style.scss';
 
 const GroupForm = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Group>();
-  const { editingGroup, setEditingGroup } = useContext(HomeContext);
+  const { setEditingGroup, setSelectedUserGroup, setActiveKey } = useContext(HomeContext);
   const { addUserGroup } = useContext(UserContext);
 
   const { mutateAsync } = useMutation(saveGroup.name, saveGroup, {
     onSuccess: data => {
-      const message = editingGroup?.id?.length! > 0 ? 'Successfully updated group!' : 'Successfully saved new group!';
-      toast.success(message, {
+      toast.success('Successfully saved new group!', {
         position: 'top-center',
         autoClose: 3000,
         hideProgressBar: false,
@@ -33,7 +34,10 @@ const GroupForm = () => {
       });
 
       addUserGroup(data);
-      setEditingGroup({ id: data.id, name: data.name } as Group);
+      setSelectedUserGroup(data);
+      setEditingGroup(undefined);
+      setActiveKey(NavMenuKeys.GROUP_VAULT + data.id);
+      reset();
     },
   });
 
