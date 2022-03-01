@@ -6,13 +6,16 @@ import { DecryptedSecret } from '../../models/DecryptedSecret';
 import { UserContext } from '../../UserContext';
 import { HomeContext } from '../../views/home/HomeContext';
 import './style.scss';
+import { ClipLoader, FadeLoader, MoonLoader } from 'react-spinners';
 
 const Secrets = () => {
   const { setEditingSecret } = useContext(HomeContext);
   const { user, getDecryptedUserSecrets } = useContext(UserContext);
 
+  const decryptedUserSecrets = getDecryptedUserSecrets();
+
   const userSecrets =
-    getDecryptedUserSecrets()?.sort((x, y) => x.name.toLowerCase().localeCompare(y.name.toLowerCase())) ?? [];
+    decryptedUserSecrets?.sort((x, y) => x.name.toLowerCase().localeCompare(y.name.toLowerCase())) ?? [];
 
   const onAddNewSecret = () =>
     setEditingSecret({ name: '', username: '', password: '', userId: user!.id } as DecryptedSecret);
@@ -27,9 +30,9 @@ const Secrets = () => {
           <LinkButton onClick={onAddNewSecret}>+ Add new secret</LinkButton>
         </div>
       </div>
-      {userSecrets === undefined ? (
-        <div className='mt-5' style={{ textAlign: 'center' }}>
-          <Spinner animation='border' />
+      {decryptedUserSecrets === undefined ? (
+        <div className='secrets-spinner'>
+          <ClipLoader color='#393f60' size={50} />
         </div>
       ) : (
         <Table hover>

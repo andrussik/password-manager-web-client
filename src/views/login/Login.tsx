@@ -11,7 +11,9 @@ import { useContext } from 'react';
 import { UserContext } from '../../UserContext';
 import './style.scss';
 import PasswordField from '../../components/password-field/PasswordField';
-import { API_URL } from '../../utils/config';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import FetchSpinner from '../../components/fetch-spinner/FetchSpinner';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,11 +25,34 @@ const Login = () => {
     formState: { errors },
   } = useForm<LoginFormData>({ reValidateMode: 'onSubmit' });
 
-  const { mutateAsync } = useMutation(login.name, login, {
+  const { mutateAsync, isLoading } = useMutation(login.name, login, {
     onSuccess: (data, loginData) => {
+      toast.success('Welcome!', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+
       setAuthenticated(data, loginData.masterPassword);
       navigate(Paths.Home);
     },
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 401) {
+        toast.error('Login failed! Invalid credentials.', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    }
   });
 
   const onSubmit = handleSubmit(async data => {
@@ -42,6 +67,7 @@ const Login = () => {
 
   return (
     <div className='login'>
+      {isLoading && <FetchSpinner />}
       <Container className='vh-100 d-flex flex-column'>
         <Row className='justify-content-md-center align-items-center h-50 my-auto mx-5'>
           <Col>

@@ -15,9 +15,15 @@ import FloatingPasswordField from '../password-field/FloatingPasswordField';
 
 const SecretForm = () => {
   const { addSecret: addUserSecret, removeSecret: removeUserSecret } = useContext(UserContext);
-  const { editingSecret, setEditingSecret,  } = useContext(HomeContext);
+  const { editingSecret, setEditingSecret } = useContext(HomeContext);
 
-  const { control, handleSubmit, reset } = useForm<DecryptedSecret>({ reValidateMode: 'onSubmit' });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<DecryptedSecret>({ reValidateMode: 'onSubmit' });
 
   const { mutateAsync } = useMutation(saveSecret.name, saveSecret, {
     onSuccess: data => {
@@ -33,7 +39,7 @@ const SecretForm = () => {
       });
 
       addUserSecret(data);
-      setEditingSecret({ ...editingSecret!, id: data.id });
+      setEditingSecret({ ...getValues()!, id: data.id });
     },
   });
 
@@ -74,6 +80,11 @@ const SecretForm = () => {
         forge.util.decode64(sessionStorage.getItem('key')!),
         forge.util.decode64(sessionStorage.getItem('iv')!)
       ),
+      description: encryptData(
+        data.description,
+        forge.util.decode64(sessionStorage.getItem('key')!),
+        forge.util.decode64(sessionStorage.getItem('iv')!)
+      ),
     } as Secret;
 
     await mutateAsync(secret);
@@ -94,8 +105,18 @@ const SecretForm = () => {
               name='name'
               control={control}
               defaultValue=''
-              render={({ field }) => <Form.Control {...field} ref={null} type='text' placeholder="Secret's name" />}
+              rules={{ required: 'Name is required' }}
+              render={({ field }) => (
+                <Form.Control
+                  {...field}
+                  ref={null}
+                  type='text'
+                  placeholder="Secret's name"
+                  isInvalid={!!errors?.name}
+                />
+              )}
             />
+            <Form.Control.Feedback type='invalid'>{errors?.name?.message}</Form.Control.Feedback>
           </FloatingLabel>
         </Form.Group>
 
@@ -117,6 +138,17 @@ const SecretForm = () => {
             defaultValue={editingSecret?.password ?? ''}
             render={({ field }) => <FloatingPasswordField {...field} ref={null} />}
           />
+        </Form.Group>
+
+        <Form.Group className='mt-5 mb-3'>
+          <FloatingLabel label='Description'>
+            <Controller
+              name='description'
+              control={control}
+              defaultValue={editingSecret?.description ?? ''}
+              render={({ field }) => <Form.Control {...field} ref={null} as='textarea' placeholder='Description' />}
+            />
+          </FloatingLabel>
         </Form.Group>
 
         <div className='mt-4'>

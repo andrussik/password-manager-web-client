@@ -3,6 +3,11 @@
 .navbar {
   background-color: $color-3;
 
+  .container {
+    min-width: $content-min-width;
+    max-width: $content-max-width;
+  }
+
   a {
     text-decoration: none;
   }

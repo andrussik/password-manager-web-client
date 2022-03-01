@@ -13,6 +13,7 @@ import { getPasswordHash } from '../../utils/crypto-utils';
 import { UserContext } from '../../UserContext';
 import './style.scss';
 import PasswordField from '../../components/password-field/PasswordField';
+import FetchSpinner from '../../components/fetch-spinner/FetchSpinner';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -20,11 +21,12 @@ const Register = () => {
 
   const {
     control,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({ reValidateMode: 'onSubmit' });
 
-  const { mutateAsync } = useMutation(register.name, register, {
+  const { mutateAsync, isLoading } = useMutation(register.name, register, {
     onSuccess: _ => {
       toast.success('Registration successful! You can now log in.', {
         position: 'top-center',
@@ -54,6 +56,7 @@ const Register = () => {
 
   return (
     <div className='register'>
+      {isLoading && <FetchSpinner />}
       <Container className='vh-100 d-flex flex-column'>
         <Row className='justify-content-md-center align-items-center h-50 my-auto mx-5'>
           <Col>
@@ -64,10 +67,12 @@ const Register = () => {
                   name='email'
                   control={control}
                   defaultValue=''
+                  rules={{ required: 'Email is required' }}
                   render={({ field }) => (
                     <Form.Control {...field} ref={null} type='email' isInvalid={!!errors?.email}></Form.Control>
                   )}
                 />
+                <Form.Control.Feedback type='invalid'>{errors?.email?.message}</Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className='mb-3'>
@@ -76,10 +81,12 @@ const Register = () => {
                   name='name'
                   control={control}
                   defaultValue=''
+                  rules={{ required: 'Name is required' }}
                   render={({ field }) => (
                     <Form.Control {...field} ref={null} type='text' isInvalid={!!errors?.name}></Form.Control>
                   )}
                 />
+                <Form.Control.Feedback type='invalid'>{errors?.name?.message}</Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className='mb-3'>
@@ -88,13 +95,39 @@ const Register = () => {
                   name='masterPassword'
                   control={control}
                   defaultValue=''
-                  render={({ field }) => <PasswordField {...field} ref={null} />}
+                  rules={{
+                    required: 'Password is required',
+                    minLength: { value: 8, message: 'minimum length is 8' },
+                  }}
+                  render={({ field }) => (
+                    <PasswordField
+                      {...field}
+                      ref={null}
+                      isInvalid={!!errors?.masterPassword}
+                      errorMessage={errors?.masterPassword?.message}
+                    />
+                  )}
                 />
               </Form.Group>
 
               <Form.Group className='mb-3'>
                 <Form.Label>Confirm Master Password</Form.Label>
-                <Form.Control type='password'></Form.Control>
+                <Controller
+                  name='confirmMasterPassword'
+                  control={control}
+                  defaultValue=''
+                  rules={{
+                    validate: value => value === watch('masterPassword') || "Passwords don't match",
+                  }}
+                  render={({ field }) => (
+                    <PasswordField
+                      {...field}
+                      ref={null}
+                      isInvalid={!!errors?.confirmMasterPassword}
+                      errorMessage={errors?.confirmMasterPassword?.message}
+                    />
+                  )}
+                />
               </Form.Group>
 
               <div>

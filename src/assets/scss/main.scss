@@ -6,9 +6,17 @@ $color-3: #212529;
 $color-4: #d3daff;
 $border-radius: 0.25rem;
 $content-border: 2px solid #7c7c7c;
+$content-min-width: 1000px;
+$content-max-width: 35rem;
 
 #root {
   height: 100%;
+}
+
+textarea,
+textarea.form-control,
+.form-floating > textarea.form-control {
+  height: 7rem;
 }
 
 label.form-label {
@@ -23,9 +31,11 @@ label.form-label {
 }
 
 .page-content-container {
-  max-width: 35rem;
-  min-width: 1000px;
+  min-width: $content-min-width;
+  max-width: $content-max-width;
   height: 100%;
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
 }
 
 .content-col {

@@ -160,6 +160,11 @@ const UserProvider = ({ children }: ProviderProps) => {
           forge.util.decode64(sessionStorage.getItem('key')!),
           forge.util.decode64(sessionStorage.getItem('iv')!)
         ),
+        description: decryptData(
+          secret.description,
+          forge.util.decode64(sessionStorage.getItem('key')!),
+          forge.util.decode64(sessionStorage.getItem('iv')!)
+        ),
       } as DecryptedSecret;
     });
   };
@@ -182,6 +187,11 @@ const UserProvider = ({ children }: ProviderProps) => {
           ),
           password: decryptData(
             secret.password,
+            forge.util.decode64(sessionStorage.getItem('key')!),
+            forge.util.decode64(sessionStorage.getItem('iv')!)
+          ),
+          description: decryptData(
+            secret.description,
             forge.util.decode64(sessionStorage.getItem('key')!),
             forge.util.decode64(sessionStorage.getItem('iv')!)
           ),

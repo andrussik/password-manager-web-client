@@ -14,6 +14,9 @@ const PasswordField = (props: any) => {
       <InputGroup.Text className='eye' onClick={onSetHide}>
         {hide ? <BsFillEyeFill /> : <BsFillEyeSlashFill />}
       </InputGroup.Text>
+      <Form.Control.Feedback type='invalid'>
+        {props.errorMessage}
+      </Form.Control.Feedback>
     </InputGroup>
   );
 };

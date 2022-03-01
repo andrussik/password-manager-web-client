@@ -11,7 +11,11 @@ import { HomeContext } from '../../views/home/HomeContext';
 import './style.scss';
 
 const GroupForm = () => {
-  const { control, handleSubmit } = useForm<Group>();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Group>();
   const { editingGroup, setEditingGroup } = useContext(HomeContext);
   const { addUserGroup } = useContext(UserContext);
 
@@ -29,38 +33,44 @@ const GroupForm = () => {
       });
 
       addUserGroup(data);
-      setEditingGroup({id: data.id, name: data.name} as Group)
+      setEditingGroup({ id: data.id, name: data.name } as Group);
     },
   });
 
   const onSubmit = handleSubmit(async data => {
     const group = {
       id: data.id,
-      name: data.name
-    } as Group
+      name: data.name,
+    } as Group;
 
     await mutateAsync(group);
   });
 
-  return <Container>
-    <h2 className='my-4'>Create new group</h2>
-    <Form onSubmit={onSubmit}>
-      <Form.Group className='mb-3'>
-        <FloatingLabel label="Group name">
-          <Controller
-            name='name'
-            control={control}
-            defaultValue=''
-            render={({ field }) => <Form.Control {...field} type='text' placeholder="Group name" />}
-          />
-        </FloatingLabel>
-      </Form.Group>
+  return (
+    <Container>
+      <h2 className='my-4'>Create new group</h2>
+      <Form onSubmit={onSubmit}>
+        <Form.Group className='mb-3'>
+          <FloatingLabel label='Group name'>
+            <Controller
+              name='name'
+              control={control}
+              defaultValue=''
+              rules={{ required: 'Name is required' }}
+              render={({ field }) => (
+                <Form.Control {...field} type='text' placeholder='Group name' isInvalid={!!errors?.name} />
+              )}
+            />
+            <Form.Control.Feedback type='invalid'>{errors?.name?.message}</Form.Control.Feedback>
+          </FloatingLabel>
+        </Form.Group>
 
-      <Button variant='outline-primary' type='submit'>
-        Save
-      </Button>
-    </Form>
-  </Container>
+        <Button variant='outline-primary' type='submit'>
+          Save
+        </Button>
+      </Form>
+    </Container>
+  );
 };
 
 export default GroupForm;

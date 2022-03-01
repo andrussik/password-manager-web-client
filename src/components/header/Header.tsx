@@ -6,7 +6,7 @@ import './style.scss'
 const Header = () => {
   return (
     <Navbar variant="dark">
-      <Container className='page-content-container'>
+      <Container>
         <NavLink to={Paths.Home}>
           <Navbar.Brand>
             Password manager
