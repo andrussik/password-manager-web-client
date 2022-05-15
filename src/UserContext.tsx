@@ -11,6 +11,7 @@ import forge from 'node-forge';
 import { decryptData, getEncryptKey, getIv } from './utils/crypto-utils';
 import { Secret } from './models/Secret';
 import { UserGroup } from './models/UserGroup';
+import FetchSpinner from './components/fetch-spinner/FetchSpinner';
 
 interface ContextProps {
   user?: User;
@@ -123,7 +124,7 @@ const UserProvider = ({ children }: ProviderProps) => {
 
   const addUserGroup = (userGroup: UserGroup) => {
     const groups =
-      user!.groups?.findIndex(x => x.id === userGroup.id) != -1
+      user!.groups?.findIndex(x => x.id === userGroup.id) !== -1
         ? user!.groups?.map(x => (x.id === userGroup.id ? userGroup : x))
         : [...(user!.groups ?? []), userGroup];
 
@@ -241,7 +242,7 @@ const UserProvider = ({ children }: ProviderProps) => {
     getDecryptedGroupSecrets,
   };
 
-  if (!isFetched) return null;
+  if (!isFetched) return <FetchSpinner />;
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

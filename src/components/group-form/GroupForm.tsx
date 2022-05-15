@@ -4,7 +4,7 @@ import { Container, FloatingLabel, Form } from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
-import { saveGroup } from '../../api/GroupApi';
+import { postGroup } from '../../api/GroupApi';
 import { Group } from '../../models/Group';
 import { UserContext } from '../../UserContext';
 import { HomeContext } from '../../views/home/HomeContext';
@@ -21,7 +21,7 @@ const GroupForm = () => {
   const { setEditingGroup, setSelectedUserGroup, setActiveKey } = useContext(HomeContext);
   const { addUserGroup } = useContext(UserContext);
 
-  const { mutateAsync } = useMutation(saveGroup.name, saveGroup, {
+  const { mutateAsync } = useMutation(postGroup.name, postGroup, {
     onSuccess: data => {
       toast.success('Successfully saved new group!', {
         position: 'top-center',

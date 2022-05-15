@@ -6,13 +6,14 @@ import { DecryptedSecret } from '../../models/DecryptedSecret';
 import { UserContext } from '../../UserContext';
 import { HomeContext } from '../../views/home/HomeContext';
 import './style.scss';
-import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { Group } from '../../models/Group';
 import { useMutation } from 'react-query';
-import { removeGroup, saveGroup, updateGroupName } from '../../api/GroupApi';
+import { patchGroup, deleteGroup, updateGroupName } from '../../api/GroupApi';
 import { NavMenuKeys } from '../nav-menu/NavMenu';
+import appToast from '../../utils/app-toast';
+import { PatchOperation } from '../../models/PatchOperation';
 
 const Secrets = () => {
   const [showEditGroup, setShowEditGroup] = useState(false);
@@ -25,37 +26,22 @@ const Secrets = () => {
     formState: { errors },
   } = useForm<Group>();
 
-  const { mutateAsync } = useMutation(updateGroupName.name, updateGroupName, {
-    onSuccess: (_, group) => {
-      const message = 'Successfully updated group!';
-      toast.success(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+  const { mutateAsync } = useMutation(
+    updateGroupName.name,
+    patchGroup,
+    {
+      onSuccess: (_, patchDocument) => {
+        appToast.success('Successfully updated group name!');
 
-      addUserGroup({ ...selectedUserGroup!, name: group.name });
-      setSelectedUserGroup({ ...selectedUserGroup!, name: group.name });
-      setShowEditGroup(false);
-    },
-  });
+        addUserGroup({ ...selectedUserGroup!, name: patchDocument.operations[0].value });
+        setSelectedUserGroup({ ...selectedUserGroup!, name: patchDocument.operations[0].value });
+        setShowEditGroup(false);
+      },
+    });
 
-  const { mutateAsync: mutateRemoveGroupAsync } = useMutation(removeGroup.name, removeGroup, {
+  const { mutateAsync: mutateRemoveGroupAsync } = useMutation(deleteGroup.name, deleteGroup, {
     onSuccess: _ => {
-      const message = 'Successfully deleted group!';
-      toast.success(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      appToast.success('Successfully deleted group!');
 
       removeUserGroup(selectedUserGroup!.id);
       setSelectedUserGroup(undefined);
@@ -65,12 +51,17 @@ const Secrets = () => {
   });
 
   const onSubmit = handleSubmit(async data => {
-    const group = {
+    const patchDocument = {
       id: selectedUserGroup!.groupId,
-      name: data.name,
-    } as Group;
-
-    await mutateAsync(group);
+      operations: [
+        {
+          op: 'replace',
+          path: 'name',
+          value: data.name
+        } as PatchOperation
+      ]
+    }
+    await mutateAsync(patchDocument);
   });
 
   const groupSecrets =

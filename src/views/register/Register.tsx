@@ -1,10 +1,8 @@
-import { AxiosError } from 'axios';
 import { useContext } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { register } from '../../api/AccountApi';
 import { RegisterFormData } from '../../models/forms/RegisterFormData';
 import { RegisterDto } from '../../models/api/RegisterDto';
@@ -14,6 +12,7 @@ import { UserContext } from '../../UserContext';
 import './style.scss';
 import PasswordField from '../../components/password-field/PasswordField';
 import FetchSpinner from '../../components/fetch-spinner/FetchSpinner';
+import appToast from '../../utils/app-toast';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,20 +27,9 @@ const Register = () => {
 
   const { mutateAsync, isLoading } = useMutation(register.name, register, {
     onSuccess: _ => {
-      toast.success('Registration successful! You can now log in.', {
-        position: 'top-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      appToast.success('Registration successful! You can now log in.');
       navigate(Paths.Home);
-    },
-    onError: (error: AxiosError) => {
-      console.log(error);
-    },
+    }
   });
 
   const onSubmit = handleSubmit(async data => {

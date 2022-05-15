@@ -1,19 +1,13 @@
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 import { ToastContainer } from 'react-toastify';
 import AppRoutes from './routes/AppRoutes';
 import UserProvider from './UserContext';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/header/Header';
 import { BrowserRouter } from 'react-router-dom';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { AxiosError } from 'axios';
+import appToast from './utils/app-toast';
+import { queryClient } from './utils/service-api';
 
 function App() {
   return (

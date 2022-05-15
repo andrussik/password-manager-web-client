@@ -12,8 +12,8 @@ import { UserContext } from '../../UserContext';
 import './style.scss';
 import PasswordField from '../../components/password-field/PasswordField';
 import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 import FetchSpinner from '../../components/fetch-spinner/FetchSpinner';
+import appToast from '../../utils/app-toast';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,31 +27,16 @@ const Login = () => {
 
   const { mutateAsync, isLoading } = useMutation(login.name, login, {
     onSuccess: (data, loginData) => {
-      toast.success('Welcome!', {
-        position: 'top-center',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      appToast.success('Welcome!');
 
       setAuthenticated(data, loginData.masterPassword);
       navigate(Paths.Home);
     },
     onError: (error: AxiosError) => {
-      if (error.response?.status === 401) {
-        toast.error('Login failed! Invalid credentials.', {
-          position: 'top-center',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
+      if (error.response?.status === 401)
+        appToast.error('Login failed! Invalid credentials.');
+      else
+        appToast.error('Login failed!');
     }
   });
 

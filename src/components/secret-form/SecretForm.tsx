@@ -1,7 +1,6 @@
 import { Container, Form, FloatingLabel, Button } from 'react-bootstrap';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
-import { toast } from 'react-toastify';
 import { removeSecret, saveSecret } from '../../api/SecretApi';
 import { Secret } from '../../models/Secret';
 import { DecryptedSecret } from '../../models/DecryptedSecret';
@@ -12,6 +11,7 @@ import { useContext, useEffect } from 'react';
 import { UserContext } from '../../UserContext';
 import { HomeContext } from '../../views/home/HomeContext';
 import FloatingPasswordField from '../password-field/FloatingPasswordField';
+import appToast from '../../utils/app-toast';
 
 const SecretForm = () => {
   const { addSecret: addUserSecret, removeSecret: removeUserSecret } = useContext(UserContext);
@@ -27,16 +27,10 @@ const SecretForm = () => {
 
   const { mutateAsync } = useMutation(saveSecret.name, saveSecret, {
     onSuccess: data => {
-      const message = editingSecret!.id?.length > 0 ? 'Successfully updated secret!' : 'Successfully saved new secret!';
-      toast.success(message, {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      const message = editingSecret!.id?.length > 0
+        ? 'Successfully updated secret!'
+        : 'Successfully saved new secret!';
+      appToast.success(message);
 
       addUserSecret(data);
       setEditingSecret({ ...getValues()!, id: data.id });
@@ -45,15 +39,7 @@ const SecretForm = () => {
 
   const { mutateAsync: deleteMutationAsync } = useMutation(removeSecret.name, removeSecret, {
     onSuccess: (_, id) => {
-      toast.success('Successfully deleted secret!', {
-        position: 'top-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      appToast.success('Successfully deleted secret!');
 
       removeUserSecret(id);
       setEditingSecret(undefined);
